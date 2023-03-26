@@ -82,20 +82,6 @@ function first_setup(){
 
     echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
     echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-    cat> /root/.profile << END
-# ~/.profile: executed by Bourne-compatible login shells.
-
-if [ "$BASH" ]; then
-  if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-  fi
-fi
-
-mesg n || true
-clear
-menu
-END
-chmod 644 /root/.profile
 }
 
 
@@ -106,14 +92,14 @@ function base_package() {
     print_install "Memasang paket yang dibutuhkan"
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1  >/dev/null 2>&1
-    sudo apt install software-properties-common -y
-    curl -sSL https://deb.nodesource.com/setup_16.x | bash - 
+    sudo apt install  -y
+    curl -sSL https://deb.nodesource.com/setup_16.x | bash - >/dev/null 2>&1
     sudo apt update && apt upgrade -y
     # linux-tools-common util-linux  \
 
-    sudo apt install squid3 nginx zip pwgen openssl netcat bash-completion screen \
-    curl socat xz-utils wget apt-transport-https dnsutils socat chrony bc htop sed \
-    tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 \
+    sudo apt install software-properties-common squid3 nginx zip pwgen netcat bash-completion \
+    curl socat xz-utils wget apt-transport-https dnsutils socat chrony bc htop sed openssl \
+    tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 screen \
     msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent \
     coreutils rsyslog iftop bzip2 gzip build-essential dirmngr libxml-parser-perl lsof \
     tmux python2.7 stunnel4 vnstat nodejs libsqlite3-dev cron lsb-release wondershaper \
@@ -172,7 +158,7 @@ function pasang_ssl() {
 }
 
 ### Mendukung websocket
-function install_xray(){
+function install_websocket(){
     wget -O /usr/sbin/ws "${REPO}websocket/ws" >/dev/null 2>&1
     wget -O /usr/sbin/ws-dropbear "${REPO}websocket/ws-dropbear" >/dev/null 2>&1
     wget -O /usr/sbin/ws-ovpn "${REPO}websocket/ws-ovpn" >/dev/null 2>&1
@@ -237,15 +223,6 @@ function install_ovpn(){
     wget -O /etc/pam.d/common-password "${REPO}openvpn/common-password" >/dev/null 2>&1
     chmod +x /etc/pam.d/common-password
 }
-
-# ### Pasang SlowDNS
-# function install_slowdns(){
-#     print_install "Memasang modul SlowDNS Server"
-#     wget -q -O /tmp/nameserver "${REPO}slowdns/nameserver" >/dev/null 2>&1
-#     chmod +x /tmp/nameserver
-#     bash /tmp/nameserver | tee /root/install.log
-#     print_success "SlowDNS"
-# }
 
 function install_stunnel(){
         cat > /etc/stunnel/stunnel.conf <<-END
@@ -439,6 +416,21 @@ ln -s /usr/bin/msmtp /usr/sbin/sendmail >/dev/null 2>&1
 ln -s /usr/bin/msmtp /usr/bin/sendmail >/dev/null 2>&1
 ln -s /usr/bin/msmtp /usr/lib/sendmail >/dev/null 2>&1
 print_ok "Selesai pemasangan modul tambahan"
+
+    cat> /root/.profile << END
+# ~/.profile: executed by Bourne-compatible login shells.
+
+if [ "$BASH" ]; then
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+
+mesg n || true
+clear
+menu
+END
+chmod 644 /root/.profile
 }
 
 
@@ -459,7 +451,7 @@ function enable_services(){
     systemctl daemon-reload
     systemctl start netfilter-persistent
     systemctl enable --now nginx
-    systemctl enable --now chronyd
+    systemctl enable --now chrony
     systemctl enable --now xray
     systemctl enable --now rc-local
     systemctl enable --now dropbear
@@ -481,8 +473,9 @@ function install_all() {
     # add_domain
     pasang_ssl 
     install_xray >> /root/install.log
+    install_websocket >> /root/install.log
     install_ovpn >> /root/install.log
-    install_slowdns >> /root/install.log
+    # install_slowdns >> /root/install.log
     download_config >> /root/install.log
     enable_services >> /root/install.log
     tambahan >> /root/install.log
@@ -549,16 +542,16 @@ function finish(){
     echo "    │   - Full Orders For Various Services                │"
     echo "    └─────────────────────────────────────────────────────┘"
     secs_to_human "$(($(date +%s) - ${start}))"
-    # echo -ne "         ${YELLOW}Please Reboot Your Vps${FONT} (y/n)? "
-    # read REDDIR
-    # if [ "$REDDIR" == "${REDDIR#[Yy]}" ]; then
-    #     exit 0
-    # else
-    #     reboot
-    # fi
+    echo -ne "         ${YELLOW}Please Reboot Your Vps${FONT} (y/n)? "
+    read REDDIR
+    if [ "$REDDIR" == "${REDDIR#[Yy]}" ]; then
+        exit 0
+    else
+        reboot
+    fi
 }
 cd /tmp
-FIGHTERTUNNEL
+# FIGHTERTUNNEL
 first_setup
 dir_xray
 add_domain
