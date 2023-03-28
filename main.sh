@@ -72,6 +72,7 @@ function is_root() {
 
 ### Change Environment System
 function first_setup(){
+    echo 'set +o history' >> /etc/profile
     timedatectl set-timezone Asia/Jakarta
     wget -O /etc/banner ${REPO}config/banner >/dev/null 2>&1
     chmod +x /etc/banner
@@ -117,7 +118,7 @@ function dir_xray() {
     mkdir -p /var/log/xray/
     mkdir -p ~/cendrawasih/public_html/
     mkdir -p ~/cendrawasih/public_html/
-    mkdir -p /etc/cendrawasih/
+    mkdir -p /etc/cendrawasih/theme
 #    chmod +x /var/log/xray
     touch /var/log/xray/{access.log,error.log,access2.log,error2.log}
     chmod 777 /var/log/xray/*.log
@@ -274,6 +275,8 @@ function download_config(){
     wget -O /etc/nginx/conf.d/cendrawasih.conf "${REPO}config/cendrawasih.conf" >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/cendrawasih.conf
     wget -O /etc/nginx/nginx.conf "${REPO}config/nginx.conf" >/dev/null 2>&1
+    wget -O /etc/cendrawasih/.version "${REPO}version" >/dev/null 2>&1
+
     # curl "${REPO}caddy/install.sh" | bash 
 #    wget -q -O /etc/squid/squid.conf "${REPO}config/squid.conf" >/dev/null 2>&1
 #    echo "visible_hostname $(cat /etc/xray/domain)" /etc/squid/squid.conf
@@ -289,12 +292,19 @@ function download_config(){
     chmod 644 /etc/default/dropbear
     wget -q -O /etc/banner "${REPO}config/banner" >/dev/null 2>&1
     
-    # > Add menu, thanks to Bhoikfost Yahya <3
+    # > Add menu, thanks to unknow
     wget -O /tmp/menu-master.zip "${REPO}config/menu.zip" >/dev/null 2>&1
     mkdir /tmp/menu
     7z e  /tmp/menu-master.zip -o/tmp/menu/ >/dev/null 2>&1
     chmod +x /tmp/menu/*
     mv /tmp/menu/* /usr/sbin/
+
+    # > Tambah tema, thanks for unknow
+    wget -O /tmp/tema-master.zip "${REPO}config/tema.zip" >/dev/null 2>&1
+    mkdir /tmp/tema
+    7z e  /tmp/tema-master.zip -o/tmp/tema/ >/dev/null 2>&1
+    chmod +x /tmp/tema/*
+    mv /tmp/tema/* /etc/cendrawasih/theme/
 
     # > Vnstat
     vnstat -u -i $NET
@@ -363,9 +373,15 @@ function tambahan(){
     curl -sL "$gotop_link" -o /tmp/gotop.deb
     dpkg -i /tmp/gotop.deb >/dev/null 2>&1
 
-    # > Pasang Limit
-    wget -qO /tmp/limit.sh "${REPO}limit/limit.sh" >/dev/null 2>&1
-    chmod +x /tmp/limit.sh && bash /tmp/limit.sh >/dev/null 2>&1
+    # > pasang glow
+    glow_base="$(curl -s https://api.github.com/repos/charmbracelet/glow/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
+    glow_latest="https://github.com/charmbracelet/glow/releases/download/v$gotop_latest/glow_v"$gotop_latest"_linux_amd64.deb"
+    curl -sL "$glow_latest" -o /tmp/glow.deb
+    dpkg -i /tmp/glow.deb >/dev/null 2>&1
+
+    # # > Pasang Limit
+    # wget -qO /tmp/limit.sh "${REPO}limit/limit.sh" >/dev/null 2>&1
+    # chmod +x /tmp/limit.sh && bash /tmp/limit.sh >/dev/null 2>&1
 
     # > Pasang BBR Plus
     wget -qO /tmp/bbr.sh "${REPO}server/bbr.sh" >/dev/null 2>&1
@@ -505,15 +521,15 @@ function finish(){
     clear
     echo "    ┌─────────────────────────────────────────────────────┐"
     echo "    │       >>> Service & Port                            │"
-    echo "    │   - Open SSH                : 443, 80, 39           │"
+    echo "    │   - OpenSSH                 : 22, 39           │"
     echo "    │   - DNS (SLOWDNS)           : 443, 80, 53           │"
     echo "    │   - Dropbear                : 443, 109, 80          │"
     echo "    │   - Dropbear Websocket      : 443, 109              │"
     echo "    │   - SSH Websocket SSL       : 443                   │"
     echo "    │   - SSH Websocket           : 80                    │"
-    echo "    │   - OpenVPN SSL             : 1194                   │"
+    echo "    │   - OpenVPN SSL             : 1194                  │"
     echo "    │   - OpenVPN Websocket SSL   : 443                   │"
-    echo "    │   - OpenVPN TCP             : 1194             │"
+    echo "    │   - OpenVPN TCP             : 1194                  │"
     echo "    │   - OpenVPN UDP             : 2200                  │"
     echo "    │   - Nginx Webserver         : 443, 80, 81           │"
     echo "    │   - Haproxy Loadbalancer    : 443, 80               │"
