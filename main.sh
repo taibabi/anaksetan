@@ -340,7 +340,6 @@ ExecStart=/etc/rc.local start
 TimeoutSec=0
 StandardOutput=tty
 RemainAfterExit=yes
-SysVStartPriority=99
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -353,7 +352,7 @@ cat >/etc/rc.local <<EOF
 # By default this script does nothing.
 iptables -I INPUT -p udp --dport 5300 -j ACCEPT
 iptables -t nat -I PREROUTING -p udp --dport 53 -j REDIRECT --to-ports 5300
-/proc/sys/net/ipv6/conf/all/disable_ipv6
+#/proc/sys/net/ipv6/conf/all/disable_ipv6
 # systemctl restart netfilter-persistent
 exit 0
 EOF
@@ -388,12 +387,20 @@ function tambahan(){
     chmod +x /tmp/bbr.sh && bash /tmp/bbr.sh
 
     # > Buat swap sebesar 1G
-    dd if=/dev/zero of=/swapfile bs=1024 count=1048576
-    mkswap /swapfile
-    chown root:root /swapfile
-    chmod 0600 /swapfile >/dev/null 2>&1
-    swapon /swapfile >/dev/null 2>&1
-    sed -i '$ i\/swapfile      swap swap   defaults    0 0' /etc/fstab
+    dd if=/dev/zero of=/swapfile1 bs=1024 count=524288 > /dev/null 2>&1
+    dd if=/dev/zero of=/swapfile2 bs=1024 count=524288 > /dev/null 2>&1
+    mkswap /swapfile1 > /dev/null 2>&1
+    mkswap /swapfile2 > /dev/null 2>&1
+    chown root:root /swapfile1 > /dev/null 2>&1
+    chown root:root /swapfile2 > /dev/null 2>&1
+    chmod 0600 /swapfile1 > /dev/null 2>&1
+    chmod 0600 /swapfile2 > /dev/null 2>&1
+    swapon /swapfile1 > /dev/null 2>&1
+    swapon /swapfile2 > /dev/null 2>&1
+    sed -i '$ i\swapon /swapfile1' /etc/rc.local > /dev/null 2>&1
+    sed -i '$ i\swapon /swapfile2' /etc/rc.local > /dev/null 2>&1
+    sed -i '$ i\/swapfile1      swap swap   defaults    0 0' /etc/fstab > /dev/null 2>&1
+    sed -i '$ i\/swapfile2      swap swap   defaults    0 0' /etc/fstab > /dev/null 2>&1
 
     # > Singkronisasi jam
     # chronyd -q 'server 0.id.pool.ntp.org iburst'
@@ -519,33 +526,35 @@ function finish(){
     # > Bersihkan History
     alias bash2="bash --init-file <(echo '. ~/.bashrc; unset HISTFILE')"
     clear
+    echo "    ┌─────────────────────────────────────────────────────┐" | tee -a /root/.install.log
+    echo "    │       >>> Service & Port                            │" | tee -a /root/.install.log
+    echo "    │   - OpenSSH                 : 22, 39                │" | tee -a /root/.install.log
+    echo "    │   - DNS (SLOWDNS)           : 443, 80, 53           │" | tee -a /root/.install.log
+    echo "    │   - Dropbear                : 443, 109, 80          │" | tee -a /root/.install.log
+    echo "    │   - Dropbear Websocket      : 443, 109              │" | tee -a /root/.install.log
+    echo "    │   - SSH Websocket SSL       : 443                   │" | tee -a /root/.install.log
+    echo "    │   - SSH Websocket           : 80                    │" | tee -a /root/.install.log
+    echo "    │   - OpenVPN SSL             : 443, 1194             │" | tee -a /root/.install.log
+    echo "    │   - OpenVPN Websocket SSL   : 443                   │" | tee -a /root/.install.log
+    echo "    │   - OpenVPN TCP             : 1194                  │" | tee -a /root/.install.log
+    echo "    │   - OpenVPN UDP             : 2200                  │" | tee -a /root/.install.log
+    echo "    │   - Nginx Webserver         : 443, 80, 81           │" | tee -a /root/.install.log
+#    echo "    │   - Haproxy Loadbalancer    : 443, 80               │" | tee -a /root/.install.log
+    echo "    │   - DNS Server              : 443, 53               │" | tee -a /root/.install.log
+    echo "    │   - DNS Client              : 443, 88               │" | tee -a /root/.install.log
+    echo "    │   - XRAY DNS (SLOWDNS)      : 443, 80, 53           │" | tee -a /root/.install.log
+    echo "    │   - XRAY Vmess TLS          : 443                   │" | tee -a /root/.install.log
+    echo "    │   - XRAY Vmess gRPC         : 443                   │" | tee -a /root/.install.log
+    echo "    │   - XRAY Vmess None TLS     : 80                    │" | tee -a /root/.install.log
+    echo "    │   - XRAY Vless TLS          : 443                   │" | tee -a /root/.install.log
+    echo "    │   - XRAY Vless gRPC         : 443                   │" | tee -a /root/.install.log
+    echo "    │   - XRAY Vless None TLS     : 80                    │" | tee -a /root/.install.log
+    echo "    │   - Trojan gRPC             : 443                   │" | tee -a /root/.install.log
+    echo "    │   - Trojan WS               : 443                   │" | tee -a /root/.install.log
+    echo "    │   - Shadowsocks WS          : 443                   │" | tee -a /root/.install.log
+    echo "    │   - Shadowsocks gRPC        : 443                   │" | tee -a /root/.install.log
+    echo "    └─────────────────────────────────────────────────────┘" | tee -a /root/.install.log
     echo "    ┌─────────────────────────────────────────────────────┐"
-    echo "    │       >>> Service & Port                            │"
-    echo "    │   - OpenSSH                 : 22, 39           │"
-    echo "    │   - DNS (SLOWDNS)           : 443, 80, 53           │"
-    echo "    │   - Dropbear                : 443, 109, 80          │"
-    echo "    │   - Dropbear Websocket      : 443, 109              │"
-    echo "    │   - SSH Websocket SSL       : 443                   │"
-    echo "    │   - SSH Websocket           : 80                    │"
-    echo "    │   - OpenVPN SSL             : 1194                  │"
-    echo "    │   - OpenVPN Websocket SSL   : 443                   │"
-    echo "    │   - OpenVPN TCP             : 1194                  │"
-    echo "    │   - OpenVPN UDP             : 2200                  │"
-    echo "    │   - Nginx Webserver         : 443, 80, 81           │"
-    echo "    │   - Haproxy Loadbalancer    : 443, 80               │"
-    echo "    │   - DNS Server              : 443, 53               │"
-    echo "    │   - DNS Client              : 443, 88               │"
-    echo "    │   - XRAY DNS (SLOWDNS)      : 443, 80, 53           │"
-    echo "    │   - XRAY Vmess TLS          : 443                   │"
-    echo "    │   - XRAY Vmess gRPC         : 443                   │"
-    echo "    │   - XRAY Vmess None TLS     : 80                    │"
-    echo "    │   - XRAY Vless TLS          : 443                   │"
-    echo "    │   - XRAY Vless gRPC         : 443                   │"
-    echo "    │   - XRAY Vless None TLS     : 80                    │"
-    echo "    │   - Trojan gRPC             : 443                   │"
-    echo "    │   - Trojan WS               : 443                   │"
-    echo "    │   - Shadowsocks WS          : 443                   │"
-    echo "    │   - Shadowsocks gRPC        : 443                   │"
     echo "    │                                                     │"
     echo "    │      >>> Server Information & Other Features        │"
     echo "    │   - Timezone                : Asia/Jakarta (GMT +7) │"
@@ -558,13 +567,13 @@ function finish(){
     echo "    │   - Full Orders For Various Services                │"
     echo "    └─────────────────────────────────────────────────────┘"
     secs_to_human "$(($(date +%s) - ${start}))"
-    echo -ne "         ${YELLOW}Please Reboot Your Vps${FONT} (y/n)? "
-    read REDDIR
-    if [ "$REDDIR" == "${REDDIR#[Yy]}" ]; then
-        exit 0
-    else
-        reboot
-    fi
+    # echo -ne "         ${YELLOW}Please Reboot Your Vps${FONT} (y/n)? "
+    # read REDDIR
+    # if [ "$REDDIR" == "${REDDIR#[Yy]}" ]; then
+    #     exit 0
+    # else
+    #     reboot
+    # fi
 }
 cd /tmp
 # FIGHTERTUNNEL
@@ -574,6 +583,6 @@ add_domain
 install_all
 finish  
 
-rm ~/.bash_history
+rm /root/.bash_history
 sleep 10
 reboot
