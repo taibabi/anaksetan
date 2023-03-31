@@ -118,7 +118,7 @@ function dir_xray() {
     mkdir -p /var/log/xray/
     mkdir -p ~/cendrawasih/public_html/
     mkdir -p ~/cendrawasih/public_html/
-    mkdir -p /etc/cendrawasih/theme
+    mkdir -p /etc/cendrawasih/theme/
 #    chmod +x /var/log/xray
     touch /var/log/xray/{access.log,error.log,access2.log,error2.log}
     chmod 777 /var/log/xray/*.log
