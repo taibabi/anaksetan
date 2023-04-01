@@ -96,14 +96,15 @@ function base_package() {
     sudo apt install  -y
     curl -sSL https://deb.nodesource.com/setup_16.x | bash - >/dev/null 2>&1
     sudo apt update && apt upgrade -y
-    # linux-tools-common util-linux  \
 
-    sudo apt install software-properties-common squid3 nginx zip pwgen netcat bash-completion \
-    curl socat xz-utils wget apt-transport-https dnsutils socat chrony bc htop sed openssl \
+    sudo apt install  squid3 nginx zip pwgen netcat bash-completion \
+    # linux-tools-common util-linux build-essential dirmngr libxml-parser-perl \
+    # lsb-release software-properties-common \
+    curl socat xz-utils wget apt-transport-https dnsutils socat chrony \
     tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 screen \
     msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent \
-    coreutils rsyslog iftop bzip2 gzip build-essential dirmngr libxml-parser-perl lsof \
-    tmux python2.7 stunnel4 vnstat nodejs libsqlite3-dev cron lsb-release wondershaper \
+    coreutils rsyslog iftop bzip2 gzip lsof bc htop sed openssl \
+    tmux python2.7 stunnel4 vnstat nodejs libsqlite3-dev cron wondershaper \
     net-tools  jq openvpn easy-rsa python3-certbot-nginx p7zip-full tuned fail2ban -y
     apt-get clean all; sudo apt-get autoremove -y
     print_ok "Berhasil memasang paket yang dibutuhkan"
