@@ -65,5 +65,5 @@ installbbrplus(){
 		dpkg -i bbrplus_5.15.96_amd64.deb >/dev/null 2>&1
 		dpkg -i bbrplus_5.15.96-headers_amd64.deb >/dev/null 2>&1
 }
-installbbrplus
+#installbbrplus
 startbbr

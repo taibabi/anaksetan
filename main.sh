@@ -97,11 +97,12 @@ function base_package() {
     curl -sSL https://deb.nodesource.com/setup_16.x | bash - >/dev/null 2>&1
     sudo apt update && apt upgrade -y
 
-    sudo apt install  squid3 nginx zip pwgen netcat bash-completion \
     # linux-tools-common util-linux build-essential dirmngr libxml-parser-perl \
     # lsb-release software-properties-common \
-    curl socat xz-utils wget apt-transport-https dnsutils socat chrony \
-    tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1 screen \
+
+    sudo apt install  squid3 nginx zip pwgen netcat bash-completion \
+    curl socat xz-utils wget apt-transport-https dnsutils screen chrony \
+    tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1  \
     msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent \
     coreutils rsyslog iftop bzip2 gzip lsof bc htop sed openssl \
     tmux python2.7 stunnel4 vnstat nodejs libsqlite3-dev cron wondershaper \
@@ -225,6 +226,16 @@ function install_ovpn(){
     chmod +x /etc/pam.d/common-password
 }
 
+### Pasang SlowDNS
+function install_slowdns(){
+    print_install "Memasang modul SlowDNS Server"
+    wget -q -O /tmp/nameserver "${REPO}slowdns/nameserver" >/dev/null 2>&1
+    chmod +x /tmp/nameserver
+    bash /tmp/nameserver | tee /root/install.log
+    print_success "SlowDNS"
+}
+
+### Pasang stunnel
 function install_stunnel(){
         cat > /etc/stunnel/stunnel.conf <<-END
 cert = /etc/stunnel/stunnel.pem
@@ -485,6 +496,8 @@ function enable_services(){
     systemctl enable --now ws
     systemctl enable --now ws-dropbear
     systemctl enable --now ws-ovpn
+    systemctl enable --now client
+    systemctl enable --now server
     systemctl enable --now vnstat
     systemctl enable --now fail2ban
     wget -O /root/.config/rclone/rclone.conf "${REPO}rclone/rclone.conf" >/dev/null 2>&1
@@ -498,7 +511,7 @@ function install_all() {
     install_xray >> /root/install.log
     install_websocket >> /root/install.log
     install_ovpn >> /root/install.log
-    # install_slowdns >> /root/install.log
+    install_slowdns >> /root/install.log
     download_config >> /root/install.log
     enable_services >> /root/install.log
     tambahan >> /root/install.log
@@ -507,13 +520,11 @@ function install_all() {
 
 function finish(){
     TEXT="
-<u>INFORMATION VPS INSTALL SC</u>
+<u>INFORMATION VPS INSTALL</u>
 <code>TIME      : </code><code>${TIME}</code>
-<code>IPVPS     : </code><code>${MYIP}</code>
+<code>LOKASI    : </code><code>${CITY}(${MYIP})</code>
 <code>DOMAIN    : </code><code>${domain}</code>
 <code>ISP       : </code><code>${ISP}</code>
-<code>LOKASI    : </code><code>${CITY}</code>
-<code>USER      : </code><code>${NAMES}</code>
 <code>RAM       : </code><code>${RAMMS}MB</code>
 <code>LINUX     : </code><code>${OS}</code>
 "
