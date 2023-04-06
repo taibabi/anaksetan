@@ -452,18 +452,6 @@ Dengan menggunakan script ini, anda menyetujui jika:
                     (c) 2023
 EOT
 
-cat <<EOT > /etc/issue
-========================================================
-                Cendrawasih Tunnel
-Dengan menggunakan script ini, anda menyetujui jika:
-- Script ini tidak diperjual belikan
-- Script ini tidak digunakan untuk aktifitas ilegal
-- Script ini tidak dienkripsi
-========================================================
-                    (c) 2023
-EOT
-
-
 chgrp mail /etc/msmtprc
 chown 0600 /etc/msmtprc
 touch /var/log/msmtp.log
