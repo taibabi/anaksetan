@@ -47,7 +47,6 @@ ns_domain_cloudflare() {
 
 setup_dnstt() {
 	cd
-	rm -rf *
 	mkdir -p /etc/slowdns
 	wget -O dnstt-server "${REPOS}slowdns/dnstt-server" >/dev/null 2>&1
 	chmod +x dnstt-server >/dev/null 2>&1
