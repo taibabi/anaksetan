@@ -463,6 +463,7 @@ Dengan menggunakan script ini, anda menyetujui jika:
                     (c) 2023
 EOT
 
+
 chgrp mail /etc/msmtprc
 chown 0600 /etc/msmtprc
 touch /var/log/msmtp.log
