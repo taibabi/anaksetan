@@ -422,8 +422,8 @@ function tambahan(){
     tuned-adm profile network-latency
 
     # > Homepage
-    wget -O ~/cendrawasih/public_html/index.html ${REPO}website/index.html >/dev/null 2>&1
-    wget -O ~/cendrawasih/public_html/style.css ${REPO}website/style.css >/dev/null 2>&1
+    wget -O /etc/cendrawasih/public_html/index.html ${REPO}website/index.html >/dev/null 2>&1
+    wget -O /etc/cendrawasih/public_html/style.css ${REPO}website/style.css >/dev/null 2>&1
 
     cat >/etc/msmtprc <<EOF
 defaults
