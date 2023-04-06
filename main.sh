@@ -116,12 +116,9 @@ clear
 function dir_xray() {
     print_install "Membuat direktori xray"
     mkdir -p /etc/{xray,vmess,websocket,vless,trojan,shadowsocks}
-    # mkdir -p /usr/sbin/xray/
     mkdir -p /var/log/xray/
-    mkdir -p ~/cendrawasih/public_html
-    mkdir -p /etc/cendrawasih/theme/
-#    chmod +x /var/log/xray
-    touch /var/log/xray/{access.log,error.log,access2.log,error2.log}
+    mkdir -p /root/cendrawasih/public_html
+    touch /var/log/xray/{access.log,error.log}
     chmod 777 /var/log/xray/*.log
     touch /etc/vmess/.vmess.db
     touch /etc/vless/.vless.db
@@ -224,6 +221,10 @@ function install_ovpn(){
     source <(curl -sL ${REPO}openvpn/openvpn)
     wget -O /etc/pam.d/common-password "${REPO}openvpn/common-password" >/dev/null 2>&1
     chmod +x /etc/pam.d/common-password
+
+    # > BadVPN
+    source <(curl -sL ${REPO}badvpn/setup.sh)
+    print_success "OpenVPN"
 }
 
 ### Pasang SlowDNS
@@ -288,14 +289,13 @@ function download_config(){
     wget -O /etc/nginx/nginx.conf "${REPO}config/nginx.conf" >/dev/null 2>&1
     wget -O /etc/cendrawasih/.version "${REPO}version" >/dev/null 2>&1
 
-    # curl "${REPO}caddy/install.sh" | bash 
-#    wget -q -O /etc/squid/squid.conf "${REPO}config/squid.conf" >/dev/null 2>&1
-#    echo "visible_hostname $(cat /etc/xray/domain)" /etc/squid/squid.conf
-#    mkdir -p /var/log/squid/cache/
-#    chmod 777 /var/log/squid/cache/
+    wget -q -O /etc/squid/squid.conf "${REPO}config/squid.conf" >/dev/null 2>&1
+    echo "visible_hostname $(cat /etc/xray/domain)" /etc/squid/squid.conf
+    mkdir -p /var/log/squid/cache/
+    chmod 777 /var/log/squid/cache/
     echo "* - nofile 65535" >> /etc/security/limits.conf
-#    mkdir -p /etc/sysconfig/
-#    echo "ulimit -n 65535" >> /etc/sysconfig/squid
+    mkdir -p /etc/sysconfig/
+    echo "ulimit -n 65535" >> /etc/sysconfig/squid
 
     # > Add Dropbear
     apt install dropbear -y
@@ -440,6 +440,26 @@ from bckupvpns@gmail.com
 password Yangbaru1Yangbaru1cuj
 logfile ~/.msmtp.log
 EOF
+
+cat <<EOT > /etc/motd
+========================================================
+                Cendrawasih Tunnel
+Dengan menggunakan script ini, anda menyetujui jika:
+- Script ini tidak diperjual belikan
+- Script ini tidak digunakan untuk aktifitas ilegal
+- Script ini tidak dienkripsi
+========================================================
+EOT
+
+cat <<EOT > /etc/issue
+========================================================
+                Cendrawasih Tunnel
+Dengan menggunakan script ini, anda menyetujui jika:
+- Script ini tidak diperjual belikan
+- Script ini tidak digunakan untuk aktifitas ilegal
+- Script ini tidak dienkripsi
+========================================================
+EOT
 
 chgrp mail /etc/msmtprc
 chown 0600 /etc/msmtprc
