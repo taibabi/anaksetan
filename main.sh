@@ -93,9 +93,9 @@ function base_package() {
     print_install "Memasang paket yang dibutuhkan"
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1  >/dev/null 2>&1
-    sudo apt install  -y
+    # sudo apt install  -y
     curl -sSL https://deb.nodesource.com/setup_16.x | bash - >/dev/null 2>&1
-    sudo apt update && apt upgrade -y
+    sudo apt update 
 
     # linux-tools-common util-linux build-essential dirmngr libxml-parser-perl \
     # lsb-release software-properties-common coreutils rsyslog \
