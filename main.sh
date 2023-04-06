@@ -531,7 +531,7 @@ function install_all() {
 
 function finish(){
     TEXT="
-<u>INFORMATION VPS INSTALL</u>
+<u>INFORMATION</u>
 <code>TIME      : </code><code>${TIME}</code>
 <code>LOKASI    : </code><code>${CITY}(${MYIP})</code>
 <code>DOMAIN    : </code><code>${domain}</code>
