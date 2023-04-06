@@ -449,6 +449,7 @@ Dengan menggunakan script ini, anda menyetujui jika:
 - Script ini tidak digunakan untuk aktifitas ilegal
 - Script ini tidak dienkripsi
 ========================================================
+                    (c) 2023
 EOT
 
 cat <<EOT > /etc/issue
@@ -459,6 +460,7 @@ Dengan menggunakan script ini, anda menyetujui jika:
 - Script ini tidak digunakan untuk aktifitas ilegal
 - Script ini tidak dienkripsi
 ========================================================
+                    (c) 2023
 EOT
 
 chgrp mail /etc/msmtprc
