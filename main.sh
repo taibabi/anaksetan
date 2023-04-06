@@ -88,7 +88,7 @@ function first_setup(){
 
 ### Update and remove packages
 function base_package() {
-    sudo apt autoremove git man-db apache2 ufw exim4 firewalld snapd* -y;
+    sudo apt autoremove git man-db apache2 ufw exim4 firewalld snapd* apparmor -y;
     clear
     print_install "Memasang paket yang dibutuhkan"
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
@@ -98,13 +98,13 @@ function base_package() {
     sudo apt update && apt upgrade -y
 
     # linux-tools-common util-linux build-essential dirmngr libxml-parser-perl \
-    # lsb-release software-properties-common \
+    # lsb-release software-properties-common coreutils rsyslog \
 
     sudo apt install  squid3 nginx zip pwgen netcat bash-completion \
     curl socat xz-utils wget apt-transport-https dnsutils screen chrony \
     tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1  \
     msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent \
-    coreutils rsyslog iftop bzip2 gzip lsof bc htop sed openssl \
+    iftop bzip2 gzip lsof bc htop sed openssl \
     tmux python2.7 stunnel4 vnstat nodejs libsqlite3-dev cron wondershaper \
     net-tools  jq openvpn easy-rsa python3-certbot-nginx p7zip-full tuned fail2ban -y
     apt-get clean all; sudo apt-get autoremove -y
