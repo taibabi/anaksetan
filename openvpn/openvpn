@@ -167,11 +167,11 @@ function cert_ovpn() {
     echo '<ca>' >> /etc/openvpn/$DOMAIN-tcp-ohp.ovpn
     cat /etc/openvpn/server/ca.crt >> /etc/openvpn/$DOMAIN-tcp-ohp.ovpn
     echo '</ca>' >> /etc/openvpn/$DOMAIN-tcp-ohp.ovpn
-    cp /etc/openvpn/$DOMAIN-tcp.ovpn ~/cendrawasih/public_html/$DOMAIN-tcp.ovpn
-    cp /etc/openvpn/$DOMAIN-udp.ovpn ~/cendrawasih/public_html/$DOMAIN-udp.ovpn
-    cp /etc/openvpn/$DOMAIN-ws-ssl.ovpn ~/cendrawasih/public_html/$DOMAIN-ws-ssl.ovpn
-    cp /etc/openvpn/$DOMAIN-ws-ssl.ovpn ~/cendrawasih/public_html/$DOMAIN-ssl.ovpn
-    cp /etc/openvpn/$DOMAIN-tcp-ohp.ovpn ~/cendrawasih/public_html/$DOMAIN-tcp-ohp.ovpn
+    cp /etc/openvpn/$DOMAIN-tcp.ovpn /root/cendrawasih/public_html/$DOMAIN-tcp.ovpn
+    cp /etc/openvpn/$DOMAIN-udp.ovpn /root/cendrawasih/public_html/$DOMAIN-udp.ovpn
+    cp /etc/openvpn/$DOMAIN-ws-ssl.ovpn /root/cendrawasih/public_html/$DOMAIN-ws-ssl.ovpn
+    cp /etc/openvpn/$DOMAIN-ws-ssl.ovpn /root/cendrawasih/public_html/$DOMAIN-ssl.ovpn
+    cp /etc/openvpn/$DOMAIN-tcp-ohp.ovpn /root/cendrawasih/public_html/$DOMAIN-tcp-ohp.ovpn
 
 }
 
