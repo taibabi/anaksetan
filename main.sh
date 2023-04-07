@@ -540,7 +540,7 @@ function finish(){
 <code>LINUX     : </code><code>${OS}</code>
 "
     curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
-    cp /etc/openvpn/*.ovpn ~/cendrawasih/public_html/
+    cp /etc/openvpn/*.ovpn /etc/cendrawasih/public_html/
     sed -i "s/xxx/${MYIP}/g" /etc/squid/squid.conf
     chown -R cendrawasih:cendrawasih /etc/msmtprc
 
@@ -598,7 +598,7 @@ function finish(){
     # fi
 }
 cd /tmp
-# FIGHTERTUNNEL
+unset HISTFILE
 first_setup
 dir_xray
 add_domain
