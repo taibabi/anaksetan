@@ -252,6 +252,7 @@ function install_ovpn(){
     wget -O /usr/sbin/ohp "${REPO}openvpn/ohp" >/dev/null 2>&1
     wget -O /etc/systemd/system/ohp.service "${REPO}openvpn/ohp.service" >/dev/null 2>&1
     chmod 644 /etc/systemd/system/ohp.service
+    chmod +x /usr/sbin/ohp
 
 }
 
@@ -343,7 +344,7 @@ function download_config(){
     mkdir /tmp/tema
     7z e  /tmp/tema-master.zip -o/tmp/tema/ >/dev/null 2>&1
     chmod +x /tmp/tema/*
-    mv /tmp/tema/* /etc/cendrawasih/theme/
+    # mv /tmp/tema/* /etc/cendrawasih/theme/    
 
     # > Vnstat
     vnstat -u -i $NET
