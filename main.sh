@@ -104,7 +104,7 @@ function base_package() {
     curl socat xz-utils wget apt-transport-https dnsutils screen chrony \
     tar wget ruby zip unzip p7zip-full python3-pip libc6  gnupg gnupg2 gnupg1  \
     msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent \
-    iftop bzip2 gzip lsof bc htop sed openssl \
+    iftop bzip2 gzip lsof bc htop sed openssl wireguard-tools \
     tmux python2.7 stunnel4 vnstat nodejs libsqlite3-dev cron wondershaper \
     net-tools  jq openvpn easy-rsa python3-certbot-nginx p7zip-full tuned fail2ban -y
     apt-get clean all; sudo apt-get autoremove -y
@@ -215,6 +215,28 @@ EOF
 print_success "Xray C0re"
 }
 
+# function wireguard(){
+    # mkdir /etc/wireguard >/dev/null 2>&1
+#     chmod 600 -R /etc/wireguard/
+#     SERVER_PRIV_KEY=$(wg genkey)
+#     SERVER_PUB_KEY=$(echo "$SERVER_PRIV_KEY" | wg pubkey)
+#     # Save WireGuard settings
+#     echo "SERVER_PUB_NIC=$SERVER_PUB_NIC
+#     SERVER_WG_NIC=wg0
+#     SERVER_WG_IPV4=10.66.66.1
+#     SERVER_PORT=7070
+#     SERVER_PRIV_KEY=$SERVER_PRIV_KEY
+#     SERVER_PUB_KEY=$SERVER_PUB_KEY" >/etc/wireguard/params
+
+#     source /etc/wireguard/params
+#     echo "[Interface]
+#     Address = $SERVER_WG_IPV4/24
+#     ListenPort = $SERVER_PORT
+#     PrivateKey = $SERVER_PRIV_KEY
+#     PostUp = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o $SERVER_PUB_NIC -j MASQUERADE;
+#     PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o $SERVER_PUB_NIC -j MASQUERADE;" >>"/etc/wireguard/wg0.conf"
+# }
+
 ### Pasang OpenVPN
 function install_ovpn(){
     print_install "Memasang modul Openvpn"
@@ -225,6 +247,12 @@ function install_ovpn(){
     # > BadVPN
     source <(curl -sL ${REPO}badvpn/setup.sh)
     print_success "OpenVPN"
+
+    # > OHP
+    wget -O /usr/sbin/ohp "${REPO}openvpn/ohp" >/dev/null 2>&1
+    wget -O /etc/systemd/system/ohp.service "${REPO}openvpn/ohp.service" >/dev/null 2>&1
+    chmod 644 /etc/systemd/system/ohp.service
+
 }
 
 ### Pasang SlowDNS
@@ -507,6 +535,7 @@ function enable_services(){
     systemctl enable --now ws
     systemctl enable --now ws-dropbear
     systemctl enable --now ws-ovpn
+    systemctl enable --now ohp
     systemctl enable --now client
     systemctl enable --now server
     systemctl enable --now vnstat
@@ -550,17 +579,17 @@ function finish(){
     clear
     echo "    ┌─────────────────────────────────────────────────────┐" | tee -a /root/.install.log
     echo "    │       >>> Service & Port                            │" | tee -a /root/.install.log
-    echo "    │   - OpenSSH                 : 22, 39                │" | tee -a /root/.install.log
+    echo "    │   - OpenSSH                 : 39                    │" | tee -a /root/.install.log
     echo "    │   - DNS (SLOWDNS)           : 443, 80, 53           │" | tee -a /root/.install.log
-    echo "    │   - Dropbear                : 443, 109, 80          │" | tee -a /root/.install.log
-    echo "    │   - Dropbear Websocket      : 443, 109              │" | tee -a /root/.install.log
+    echo "    │   - Dropbear                : 109, 143              │" | tee -a /root/.install.log
+    # echo "    │   - Dropbear Websocket      : 443, 109              │" | tee -a /root/.install.log
     echo "    │   - SSH Websocket SSL       : 443                   │" | tee -a /root/.install.log
     echo "    │   - SSH Websocket           : 80                    │" | tee -a /root/.install.log
     echo "    │   - OpenVPN SSL             : 443, 1194             │" | tee -a /root/.install.log
     echo "    │   - OpenVPN Websocket SSL   : 443                   │" | tee -a /root/.install.log
     echo "    │   - OpenVPN TCP             : 1194                  │" | tee -a /root/.install.log
     echo "    │   - OpenVPN UDP             : 2200                  │" | tee -a /root/.install.log
-    echo "    │   - Nginx Webserver         : 443, 80, 81           │" | tee -a /root/.install.log
+    echo "    │   - Nginx Webserver         : 81                    │" | tee -a /root/.install.log
 #    echo "    │   - Haproxy Loadbalancer    : 443, 80               │" | tee -a /root/.install.log
     echo "    │   - DNS Server              : 443, 53               │" | tee -a /root/.install.log
     echo "    │   - DNS Client              : 443, 88               │" | tee -a /root/.install.log
