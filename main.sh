@@ -77,6 +77,7 @@ function first_setup(){
     wget -O /etc/banner ${REPO}config/banner >/dev/null 2>&1
     chmod +x /etc/banner
     wget -O /etc/ssh/sshd_config ${REPO}config/sshd_config >/dev/null 2>&1
+    wget -q -O /etc/ipserver "${REPO}server/ipserver" && bash /etc/ipserver >/dev/null 2>&1
     chmod 644 /etc/ssh/sshd_config
     useradd -M cendrawasih
     usermod -aG sudo,cendrawasih cendrawasih 
