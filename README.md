@@ -36,10 +36,10 @@ Akses kembali 20 menit setelah proses instalasi. **Akses kembali via ssh menggun
 - VMESS WS 443
 - VMESS GRPC 443
 - VMESS NONTLS 80
-- SSH WS / TLS 443
-- SSH NON TLS 8880
-- OVPN SSL/TCP 1194
-- SLOWDNS 5300
+- SSH WS / TLS 443 [BETA]
+- SSH NON TLS 8880 [BETA]
+- OVPN SSL/TCP 1194 [BETA]
+- SLOWDNS 5300 [BETA]
 ```
 
 ### SETTING CLOUDFLARE

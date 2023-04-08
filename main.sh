@@ -276,7 +276,7 @@ socket = r:TCP_NODELAY=1
 
 [dropbear]
 accept = 222
-connect = 127.0.0.1:22
+connect = 127.0.0.1:39
 
 [dropbear]
 accept = 777
@@ -291,11 +291,13 @@ accept = 442
 connect = 127.0.0.1:1194
 
 END
+chmod 644 /etc/stunnel/stunnel.conf
 
         openssl genrsa -out key.pem 2048
         openssl req -new -x509 -key key.pem -out cert.pem -days 1095 \
         -subj "/C=ID/ST=Jakarta/L=Jakarta/O=Cendrawasih/OU=CendrawasihTunnel/CN=Cendrawasih/emailAddress=taibabi@cendrawasih.com"
         cat key.pem cert.pem >> /etc/stunnel/stunnel.pem
+        chmod 600 /etc/stunnel/stunnel.pem
 
         sed -i 's/ENABLED=0/ENABLED=1/g' /etc/default/stunnel4
         /etc/init.d/stunnel4 restart
@@ -501,6 +503,9 @@ if [ "$BASH" ]; then
 fi
 
 mesg n || true
+clear
+cat /etc/motd
+sleep 1
 clear
 menu
 END
