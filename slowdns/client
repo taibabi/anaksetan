@@ -1,6 +1,6 @@
 [Unit]
-Description=Client SlowDNS
-Documentation=https://github.com/spencer-p/slowdns
+Description=High Peformance DNS Tunnel Client
+Documentation=https://www.bamsoftware.com/software/dnstt
 After=network.target nss-lookup.target
 [Service]
 Type=simple

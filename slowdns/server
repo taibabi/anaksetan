@@ -1,6 +1,6 @@
 [Unit]
-Description=Server SlowDNS
-Documentation=https://www.google.com/
+Description=High Peformance DNS Tunnel Server
+Documentation=https://www.bamsoftware.com/software/dnstt
 After=network.target nss-lookup.target
 [Service]
 Type=simple
